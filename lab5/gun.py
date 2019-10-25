@@ -3,8 +3,6 @@ import tkinter as tk
 import math
 import time
 
-# print (dir(math))
-
 root = tk.Tk()
 fr = tk.Frame(root)
 root.geometry('800x600')
@@ -148,10 +146,12 @@ class target():
 
     def new_target(self):
         """ Инициализация новой цели. """
-        x = self.x = rnd(600, 780)
+        x = self.x = rnd(600, 760)
         y = self.y = rnd(300, 550)
-        r = self.r = rnd(2, 50)
+        r = self.r = rnd(5, 50)
         color = self.color = 'red'
+        self.vx = rnd(-5, 5)
+        self.vy = rnd(-5, 5)
         canv.coords(self.id, x - r, y - r, x + r, y + r)
         canv.itemconfig(self.id, fill=color)
 
@@ -161,6 +161,14 @@ class target():
         self.points += points
         canv.itemconfig(self.id_points, text=self.points)
 
+    def move(self):
+        if self.x >= 800 or self.x <= 0:
+            self.vx = -self.vx
+        if self.y >= 600 or self.y <= 0:
+            self.vy = -self.vy
+        self.x += self.vx
+        self.y -= self.vy
+        canv.move(self.id, self.vx, -self.vy)
 
 t1 = target()
 t2 = target()
@@ -197,6 +205,8 @@ def new_game(event=''):
                     canv.bind('<ButtonRelease-1>', '')
                     canv.itemconfig(screen1, text='Вы уничтожили цели за ' + str(bullet) + ' выстрелов')
         canv.update()
+        t1.move()
+        t2.move()
         time.sleep(z)
         g1.targetting()
         g1.power_up()
