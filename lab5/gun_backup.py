@@ -51,22 +51,12 @@ class ball():
         self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        self.vy -= 1
-        if self.x + self.vx >= 780:
-            self.x = 780
-        if self.x + self.vx <= 20:
-            self.x = 20
-        if (self.x >= 780) or (self.x <= 20):
-            self.vx = - self.vx
-        if self.y - self.vy >= 580:
-            self.y = 580
-        if self.y >= 580:
-            self.vy = - self.vy / 1.5
-            self.vx = self.vx / 1.5
-        if self.vx ** 2 + self.vy ** 2 < 2:
-            self.vy = 0
-            self.vx = 0
-            self.y = 580
+        self.vy -= 0.5
+        if self.x >= 800 or self.x <= 0:
+            self.vx = -self.vx
+        if self.y >= 600:
+            self.vy += 2
+            self.vy = -self.vy
         self.x += self.vx
         self.y -= self.vy
         self.set_coords()
@@ -189,12 +179,14 @@ def new_game(event=''):
                 if b.hittest(t1):
                     t1.live = 0
                     t1.hit()
+                    canv.bind('<Button-1>', '')
+                    canv.bind('<ButtonRelease-1>', '')
                 if b.hittest(t2):
                     t2.live = 0
                     t2.hit()
-                if t1.live == 0 and t2.live == 0:
                     canv.bind('<Button-1>', '')
                     canv.bind('<ButtonRelease-1>', '')
+                if t1.live == 0 and t2.live == 0:
                     canv.itemconfig(screen1, text='Вы уничтожили цели за ' + str(bullet) + ' выстрелов')
         canv.update()
         time.sleep(z)
