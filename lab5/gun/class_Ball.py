@@ -3,7 +3,7 @@ import math
 
 
 class Ball:
-    def __init__(self, canvas, x=40, y=450):
+    def __init__(self, canvas, x, y):
         """ Конструктор класса ball
 
         Args:
@@ -24,7 +24,6 @@ class Ball:
             self.y + self.r,
             fill=self.color
         )
-        self.live = 30
 
     def set_coords(self):
         self.canvas.coords(
@@ -43,20 +42,16 @@ class Ball:
         и стен по краям окна (размер окна 800х600).
         """
         # TODO :написать нормальный мув для шариков (с гравттыйией и тд)
-        self.vy -= 1
-        if self.x + self.vx >= 780:
-            self.x = 780
-        if self.x + self.vx <= 20:
-            self.x = 20
-        if (self.x >= 780) or (self.x <= 20):
-            self.vx = - self.vx
-        if self.y - self.vy >= 580:
-            self.y = 580
-        if self.y >= 580:
-            self.vy = - self.vy / 1.5
-            self.vx = self.vx / 1.5
+        if (self.x <= 0 and self.vx < 0) or (self.x >= 780 and self.vx > 0):
+            self.vx = -self.vx / 3
+        if self.y >= 570 and self.vy > 0:
+            self.vy = -self.vy / 2
+        if self.y >= 570 and abs(self.vy) < 1:
+            self.y = 569
+            self.vy = 0
+        self.vy += 1
         self.x += self.vx
-        self.y -= self.vy
+        self.y += self.vy
         self.set_coords()
 
     def hittest(self, obj):
@@ -76,7 +71,7 @@ class Ball:
         return False
 
     def check_for_death(self):
-        if self.vx < 0.001 and self.vy < 0.001 and self.y > 570:
+        if abs(self.vy) < 1.1 and self.y > 550:  # TODO: исправить этот иф!!!
             self.canvas.delete(self.id)
             return True
         return False
