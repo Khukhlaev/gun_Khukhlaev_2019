@@ -163,7 +163,6 @@ balls = []
 def new_game(event=''):
     global gun, t1, screen1, balls, bullet
     t1.new_target()
-    t2.new_target()
     bullet = 0
     balls = []
     canv.bind('<Button-1>', g1.fire2_start)
@@ -172,21 +171,16 @@ def new_game(event=''):
     z = 0.03
     t1.live = 1
     t2.live = 1
-    while t1.live or t2.live or balls:
+    while t1.live or balls:
         for b in balls:
             b.move()
-            if (t1.live or t2.live) and (b.hittest(t1) or b.hittest(t2)):
+            if t1.live and b.hittest(t1):
                 if b.hittest(t1):
                     t1.live = 0
                     t1.hit()
                     canv.bind('<Button-1>', '')
                     canv.bind('<ButtonRelease-1>', '')
-                if b.hittest(t2):
-                    t2.live = 0
-                    t2.hit()
-                    canv.bind('<Button-1>', '')
-                    canv.bind('<ButtonRelease-1>', '')
-                if t1.live == 0 and t2.live == 0:
+                if t1.live == 0:
                     canv.itemconfig(screen1, text='Вы уничтожили цели за ' + str(bullet) + ' выстрелов')
         canv.update()
         time.sleep(z)
