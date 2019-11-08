@@ -6,7 +6,6 @@ class Target:
         self.points = 0
         self.canvas = canvas
         self.id = self.canvas.create_oval(0, 0, 0, 0)
-        self.id_points = self.canvas.create_text(30, 30, text=self.points, font='28')
         x = self.x = rnd(600, 760)
         y = self.y = rnd(300, 550)
         r = self.r = rnd(5, 50)
@@ -17,12 +16,16 @@ class Target:
         self.canvas.itemconfig(self.id, fill=color)
 
     def hit(self, points=1):
-        """Попадание шарика в цель."""
+        """When something hit the target"""
         self.canvas.delete(self.id)
         self.points += points
-        self.canvas.itemconfig(self.id_points, text=self.points)
+        return self.points
 
     def move(self):
+        """ Move the target after a unit of time.
+            The method describes the movement of the target in one frame of the redraw. That is, updates the values
+            self.x and self.y considering self speeds: self.vx and self.vy,
+            and walls on the edges of the window (window size 800x600)."""
         dx = 0
         dy = 0
         if self.x + self.vx - self.r < 10:  # If target will touch left wall
@@ -34,7 +37,7 @@ class Target:
         if self.y + self.vy + self.r > 590:  # If target will touch "floor"
             dy = self.y + self.vy + self.r - 590
             self.vy *= -1
-        if self.y + self.vy - self.r < 0:  # If target will touch "floor"
+        if self.y + self.vy - self.r < 0:  # If target will touch "roof"
             dy = self.y + self.vy - self.r
             self.vy *= -1
         self.x += self.vx - dx

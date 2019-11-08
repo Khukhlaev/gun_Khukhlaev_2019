@@ -1,5 +1,4 @@
 import tkinter as tk
-from time import sleep
 
 from class_Ball import Ball
 from class_Gun import Gun
@@ -18,9 +17,11 @@ canv.pack(fill=tk.BOTH, expand=1)
 targets = []
 balls = []
 gun = ""
-screen1 = canv.create_text(400, 300, text='', font='28')
 score = 0
 number_targets = 0
+points = 0
+id_points = ''
+game_over = False
 
 
 def make_targets(number):
@@ -28,24 +29,21 @@ def make_targets(number):
 
 
 def game():
-    """main function of the game, is called every 30 ms"""
-    global gun, targets, balls, score, screen1, number_targets
+    """main function of the each iteration of the game, is called every 30 ms"""
+    global gun, targets, balls, score, number_targets, points, game_over, id_points
     for b in balls:
         b.move()
         delete = ''
         for t in targets:
             if b.hittest(t):
-                t.hit()
+                points += t.hit()
+                canv.itemconfig(id_points, text=points)
                 delete = t
                 score += 1
         if delete:
             targets.remove(delete)
         if b.check_for_death():
             balls.remove(b)
-    if score == number_targets:
-        canv.bind('<Button-1>', '')
-        canv.bind('<ButtonRelease-1>', '')
-        canv.itemconfig(screen1, text='Вы уничтожили цели за ' + str(gun.bullet) + ' выстрелов')
     for t in targets:
         t.move()
     canv.update()
@@ -53,12 +51,23 @@ def game():
         balls.append(gun.new_ball)
         gun.draw_new_ball = False
     gun.power_up()
-    root.after(30, game)
+    if score == number_targets:  # If player hits all targets
+        canv.bind('<Button-1>', '')
+        canv.bind('<ButtonRelease-1>', '')
+        canv.create_text(400, 300, text='Вы уничтожили цели за ' + str(gun.bullet) + ' выстрелов', font='Arial 20')
+        game_over = True
+    if not game_over:
+        root.after(30, game)
+    if game_over:
+        root.after(5000, new_game)
 
 
 def new_game():
-    global gun, targets, number_targets, score, balls
-    # canv.delete(ALL)??????????????
+    """this function starts new iteration of the game, is called 5 seconds after iteration finished"""
+    global gun, targets, number_targets, score, balls, game_over, id_points
+    canv.delete(tk.ALL)
+    id_points = canv.create_text(30, 30, text=str(points), font='Arial 18')
+    game_over = False
     score = 0
     if gun:
         canv.delete(gun.id)
@@ -74,7 +83,6 @@ def new_game():
     targets.clear()
     targets = make_targets(number_targets)
     game()
-    root.after(10000, new_game)
 
 
 new_game()
