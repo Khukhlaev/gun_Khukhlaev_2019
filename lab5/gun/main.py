@@ -13,14 +13,13 @@ canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
 
 # make global variables
-
 targets = []
 balls = []
 gun = ""
 score = 0
 number_targets = 0
 points = 0
-id_points = ''
+id_points = ''  # It will be reference to the text object on the canvas which shows number of the points player has
 game_over = False
 
 
@@ -33,14 +32,14 @@ def game():
     global gun, targets, balls, score, number_targets, points, game_over, id_points
     for b in balls:
         b.move()
-        delete = ''
+        delete = ''  # It may will be reference to the target we should delete
         for t in targets:
             if b.hittest(t):
                 points += t.hit()
                 canv.itemconfig(id_points, text=points)
                 delete = t
                 score += 1
-        if delete:
+        if delete:  # If delete != '' so if there is target to delete
             targets.remove(delete)
         if b.check_for_death():
             balls.remove(b)
@@ -69,16 +68,14 @@ def new_game():
     id_points = canv.create_text(30, 30, text=str(points), font='Arial 18')
     game_over = False
     score = 0
-    if gun:
-        canv.delete(gun.id)
     gun = Gun(canv)
     balls.clear()
     canv.create_line(10, 0, 10, 590)
     canv.create_line(10, 590, 790, 590)
     canv.create_line(790, 0, 790, 590)
-    canv.bind('<Button-1>', gun.fire2_start)
-    canv.bind('<ButtonRelease-1>', gun.fire2_end)
-    canv.bind('<Motion>', gun.targetting)
+    canv.bind('<Button-1>', gun.fire_start)
+    canv.bind('<ButtonRelease-1>', gun.fire_end)
+    canv.bind('<Motion>', gun.targeting)
     number_targets = 2  # You can change number of targets if you want
     targets.clear()
     targets = make_targets(number_targets)

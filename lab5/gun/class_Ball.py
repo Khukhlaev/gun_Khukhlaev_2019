@@ -4,7 +4,6 @@ import math
 
 class Ball:
     def __init__(self, canvas, x, y, vx=0, vy=0, ):
-
         """ Ball class constructor
         Args:
         x - initial horizontal position of the ball
@@ -77,7 +76,8 @@ class Ball:
         return False
 
     def check_for_death(self):
-        """this """
+        """this method return True if we should delete ball
+        (if his velocity is little and ball is on the 'floor')"""
         if abs(self.vx) < 1 and abs(self.vy) < 1.1 and self.y > 550:
             self.canvas.delete(self.id)
             return True

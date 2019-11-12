@@ -4,48 +4,53 @@ from class_Ball import Ball
 
 class Gun:
     def __init__(self, canvas):
-        self.f2_power = 10
-        self.f2_on = 0
-        self.an = 1
-        self.bullet = 0
+        """Ball class constructor """
+        self.fire_power = 10  # Power of the gun
+        self.fire_on = False  # This flag indicates when new shot starts
+        self.an = 1  # Angle of the gun
+        self.bullet = 0  # Number of shots
         self.canvas = canvas
-        self.id = self.canvas.create_line(20, 450, 50, 420, width=7)  # FIXME: don't know how to set it...
-        self.draw_new_ball = False
-        self.new_ball = ""
+        self.id = self.canvas.create_line(20, 450, 50, 420, width=7)
+        self.draw_new_ball = False  # This flag indicates when we should draw new ball
+        self.new_ball = ""  # It will be reference to the new ball we should draw
 
-    def fire2_start(self, event):
-        self.f2_on = 1
+    def fire_start(self, event):
+        """ Make code known that the process of shooting started """
+        self.fire_on = True
 
-    def fire2_end(self, event):
+    def fire_end(self, event):
         """ Shot the ball.
         Happened when you release the mouse button.
         The initial values of the ball velocity components vx and vy depend on the position of the mouse."""
         self.bullet += 1
-        vx = self.f2_power * math.cos(self.an)
-        vy = self.f2_power * math.sin(self.an)
+        vx = self.fire_power * math.cos(self.an)
+        vy = self.fire_power * math.sin(self.an)
         self.new_ball = Ball(self.canvas, self.canvas.coords(self.id)[2], self.canvas.coords(self.id)[3], vx, vy)
         self.an = math.atan((event.y - self.new_ball.y) / (event.x - self.new_ball.x))
-        self.f2_on = 0
-        self.f2_power = 10
+        self.fire_on = False
+        self.fire_power = 10
         self.draw_new_ball = True
 
-    def targetting(self, event=0):
-        """Прицеливание. Зависит от положения мыши."""
+    def targeting(self, event=0):
+        """Targeting. Depends on the position of the mouse. """
         if event:
+            if event.x - 20 == 0:  # To prevent error division by zero
+                event.x = 20.01
             self.an = math.atan((event.y - 450) / (event.x - 20))
-        if self.f2_on:
+        if self.fire_on:
             self.canvas.itemconfig(self.id, fill='orange')
         else:
             self.canvas.itemconfig(self.id, fill='black')
         self.canvas.coords(self.id, 20, 450,
-                           20 + max(self.f2_power, 20) * math.cos(self.an),
-                           450 + max(self.f2_power, 20) * math.sin(self.an)
+                           20 + max(self.fire_power, 20) * math.cos(self.an),
+                           450 + max(self.fire_power, 20) * math.sin(self.an)
                            )
 
     def power_up(self):
-        if self.f2_on:
-            if self.f2_power < 100:
-                self.f2_power += 1
+        """Increasing power of the gun, make the gun orange if there is process of shooting"""
+        if self.fire_on:
+            if self.fire_power < 100:
+                self.fire_power += 1
             self.canvas.itemconfig(self.id, fill='orange')
         else:
             self.canvas.itemconfig(self.id, fill='black')

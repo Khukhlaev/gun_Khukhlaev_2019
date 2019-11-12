@@ -3,22 +3,22 @@ from random import randrange as rnd
 
 class Target:
     def __init__(self, canvas):
-        self.points = 0
+        """ Ball class constructor """
+        self.points = 1  # Points which are given to the player for hitting one target, you can change it if you want
         self.canvas = canvas
         self.id = self.canvas.create_oval(0, 0, 0, 0)
         x = self.x = rnd(600, 760)
         y = self.y = rnd(300, 550)
         r = self.r = rnd(5, 50)
         color = self.color = 'red'
-        self.vx = rnd(-5, 5)
-        self.vy = rnd(-5, 5)
+        self.vx = rnd(-5, 5)  # Random x velocity, you can change it if you want
+        self.vy = rnd(-5, 5)  # Random y velocity, you can change it if you want
         self.canvas.coords(self.id, x - r, y - r, x + r, y + r)
         self.canvas.itemconfig(self.id, fill=color)
 
     def hit(self, points=1):
         """When something hit the target"""
         self.canvas.delete(self.id)
-        self.points += points
         return self.points
 
     def move(self):
